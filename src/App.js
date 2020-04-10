@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTransition, animated } from "react-spring";
 import { easeQuadIn, easeQuadOut } from "d3-ease";
 import "./App.css";
+
+let useClickOutside = (handler) => {
+  let domNode = useRef();
+
+  useEffect(() => {
+    let maybeHandler = (event) => {
+      if (!domNode.current.contains(event.target)) {
+        handler();
+      }
+    };
+
+    document.addEventListener("mousedown", maybeHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", maybeHandler);
+    };
+  });
+
+  return domNode;
+};
 
 function App() {
   let [isOpen, setIsOpen] = useState(false);
@@ -16,9 +36,13 @@ function App() {
     }),
   });
 
+  let domNode = useClickOutside(() => {
+    setIsOpen(false);
+  });
+
   return (
     <div className="flex items-center justify-center mt-24">
-      <div className="relative inline-block text-left">
+      <div ref={domNode} className="relative inline-block text-left">
         <div>
           <span className="rounded-md shadow-sm">
             <button
@@ -51,10 +75,7 @@ function App() {
               >
                 <div className="rounded-md bg-white shadow-xs">
                   <div className="py-1">
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    <button className="group w-full flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -68,11 +89,8 @@ function App() {
                         />
                       </svg>
                       Edit
-                    </a>
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    </button>
+                    <button className="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -85,14 +103,11 @@ function App() {
                         />
                       </svg>
                       Duplicate
-                    </a>
+                    </button>
                   </div>
                   <div className="border-t border-gray-100"></div>
                   <div className="py-1">
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    <button className="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -106,11 +121,8 @@ function App() {
                         />
                       </svg>
                       Archive
-                    </a>
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    </button>
+                    <button className="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -123,14 +135,11 @@ function App() {
                         />
                       </svg>
                       Move
-                    </a>
+                    </button>
                   </div>
                   <div className="border-t border-gray-100"></div>
                   <div className="py-1">
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    <button className="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -139,11 +148,8 @@ function App() {
                         <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
                       </svg>
                       Share
-                    </a>
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    </button>
+                    <button className="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -156,14 +162,11 @@ function App() {
                         />
                       </svg>
                       Add to favorites
-                    </a>
+                    </button>
                   </div>
                   <div className="border-t border-gray-100"></div>
                   <div className="py-1">
-                    <a
-                      href="/"
-                      className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    >
+                    <button className="w-full group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                       <svg
                         className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                         fill="currentColor"
@@ -176,7 +179,7 @@ function App() {
                         />
                       </svg>
                       Delete
-                    </a>
+                    </button>
                   </div>
                 </div>
               </animated.div>
